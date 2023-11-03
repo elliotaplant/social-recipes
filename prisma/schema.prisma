@@ -16,6 +16,8 @@ model User {
 
   password Password?
   notes    Note[]
+
+  recipes UserRecipe[]
 }
 
 model Password {
@@ -35,4 +37,79 @@ model Note {
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String
+}
+
+model Recipe {
+  id                      String          @id @default(cuid())
+  name                    String
+  createdBy               String
+  prepTimeMinutes         Int
+  cookTimeMinutes         Int
+  numServings             Int
+  instagramPostUrl        String?
+  instagramAuthorUsername String?
+  instagramImageUrl       String?
+  recipeBlogUrl           String?
+  UserRecipes             UserRecipe[]
+  Ingredients             Ingredient[]
+  Instructions            Instruction[]
+
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
+}
+
+model Ingredient {
+  id        String  @id @default(cuid())
+  unit      String
+  quantity  Float
+  name      String
+  Recipe    Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  recipeId  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Instruction {
+  id        String  @id @default(cuid())
+  text      String
+  Recipe    Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  recipeId  String
+
+  stepNumber Int // To maintain the order of instructions
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RecipeTag {
+  id    String       @id @default(cuid())
+  value String       @unique
+  UserRecipeTags UserRecipeTag[]
+}
+
+model UserRecipeTag {
+  id         String    @id @default(cuid())
+  tagId      String
+  userRecipeId String
+
+  Tag       RecipeTag       @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  UserRecipe UserRecipe @relation(fields: [userRecipeId], references: [id], onDelete: Cascade)
+
+  @@unique([tagId, userRecipeId])
+}
+
+model UserRecipe {
+  id       String          @id @default(cuid())
+  userId   String
+  recipeId String
+  tags     UserRecipeTag[]
+
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, recipeId])
 }
