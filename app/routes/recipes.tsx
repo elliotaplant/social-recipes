@@ -3,43 +3,43 @@ import { json } from "@remix-run/node";
 import { Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
 import { Header } from "~/components/header";
-import { getNoteListItems } from "~/models/note.server";
+import { getUserRecipeListItems } from "~/models/recipe.server";
 import { requireUserId } from "~/session.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
-  const noteListItems = await getNoteListItems({ userId });
-  return json({ noteListItems });
+  const userRecipeListItems = await getUserRecipeListItems({ userId });
+  return json({ userRecipeListItems });
 };
 
-export default function NotesPage() {
+export default function RecipesPage() {
   const data = useLoaderData<typeof loader>();
 
   return (
     <div className="flex h-full min-h-screen flex-col">
-      <Header title="Notes" />
+      <Header title="Recipes" />
 
       <main className="flex h-full bg-white">
         <div className="h-full w-80 border-r bg-gray-50">
           <Link to="new" className="block p-4 text-xl text-blue-500">
-            + New Note
+            + New Recipe
           </Link>
 
           <hr />
 
-          {data.noteListItems.length === 0 ? (
-            <p className="p-4">No notes yet</p>
+          {data.userRecipeListItems.length === 0 ? (
+            <p className="p-4">No Recipes yet</p>
           ) : (
             <ol>
-              {data.noteListItems.map((note) => (
-                <li key={note.id}>
+              {data.userRecipeListItems.map(({ recipe }) => (
+                <li key={recipe.id}>
                   <NavLink
                     className={({ isActive }) =>
                       `block border-b p-4 text-xl ${isActive ? "bg-white" : ""}`
                     }
-                    to={note.id}
+                    to={recipe.id}
                   >
-                    📝 {note.title}
+                    📝 {recipe.name}
                   </NavLink>
                 </li>
               ))}

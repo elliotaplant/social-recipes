@@ -63,7 +63,7 @@ model Ingredient {
   unit      String
   quantity  Float
   name      String
-  Recipe    Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  recipe    Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   recipeId  String
 
   createdAt DateTime @default(now())
@@ -73,7 +73,7 @@ model Ingredient {
 model Instruction {
   id        String  @id @default(cuid())
   text      String
-  Recipe    Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  recipe    Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   recipeId  String
 
   stepNumber Int // To maintain the order of instructions
@@ -85,7 +85,7 @@ model Instruction {
 model RecipeTag {
   id    String       @id @default(cuid())
   value String       @unique
-  UserRecipeTags UserRecipeTag[]
+  userRecipeTags UserRecipeTag[]
 }
 
 model UserRecipeTag {
@@ -93,8 +93,8 @@ model UserRecipeTag {
   tagId      String
   userRecipeId String
 
-  Tag       RecipeTag       @relation(fields: [tagId], references: [id], onDelete: Cascade)
-  UserRecipe UserRecipe @relation(fields: [userRecipeId], references: [id], onDelete: Cascade)
+  tag       RecipeTag       @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  userRecipe UserRecipe @relation(fields: [userRecipeId], references: [id], onDelete: Cascade)
 
   @@unique([tagId, userRecipeId])
 }
@@ -105,8 +105,8 @@ model UserRecipe {
   recipeId String
   tags     UserRecipeTag[]
 
-  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

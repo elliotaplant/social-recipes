@@ -46,15 +46,7 @@ export default function NewNotePage() {
   }, [actionData]);
 
   return (
-    <Form
-      method="post"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        width: "100%",
-      }}
-    >
+    <Form method="post" className="flex flex-col gap-2 w-full">
       <div>
         <label className="flex w-full flex-col gap-1">
           <span>Title: </span>
