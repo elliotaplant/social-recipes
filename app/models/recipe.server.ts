@@ -1,6 +1,7 @@
 import type { User, Recipe } from "@prisma/client";
 
 import { prisma } from "~/db.server";
+import { notifierQueue } from "~/queues/notifier.server";
 
 export function getUserRecipe({
   id,
@@ -58,7 +59,9 @@ export async function createRecipeFromInstagram({
 }) {
   // TODO: Get recipe details from the Instagram post
   // const recipeDetails = await getRecipeFromInstagramPost(instagramPostUrl);
-  // Maybe create a job instead of directly creating it here?
+  await notifierQueue.add("notification email", {
+    emailAddress: JSON.stringify({ name, instagramPostUrl, userId }),
+  });
 
   // Create a new recipe in the database with the fetched details
   return prisma.recipe.create({
