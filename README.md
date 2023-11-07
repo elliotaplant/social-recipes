@@ -8,6 +8,34 @@ Learn more about [Remix Stacks](https://remix.run/stacks).
 npx create-remix@latest --template remix-run/indie-stack
 ```
 
+## Updating cookies
+
+The cookies used to get data from instagram have to update periodically. Run this JS snippet on Instagram to get the cookies:
+
+```javascript
+(function () {
+  const getCookies = (names) => {
+    let cookies = document.cookie.split(";");
+    let cookieValues = {};
+    names.forEach((name) => {
+      let cookie = cookies.find((cookie) =>
+        cookie.trim().startsWith(name + "="),
+      );
+      if (cookie) {
+        cookieValues[name] = cookie.split("=")[1];
+      }
+    });
+    return cookieValues;
+  };
+
+  let cookieNames = ["ds_user_id", "sessionid"];
+  let cookies = getCookies(cookieNames);
+  console.log(cookies);
+})();
+```
+
+Then, add the cookies in the ui at `/instacookies`
+
 ## What's in the stack
 
 - [Fly app deployment](https://fly.io) with [Docker](https://www.docker.com/)

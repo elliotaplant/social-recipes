@@ -12,7 +12,7 @@ export const extractionQueue = registerQueue<QueueData>(
   "extraction",
   async (job) => {
     await job.log(`Beginning extraction job ${JSON.stringify(job.data)}`);
-    const { username, recipe, failureReason, blogUrl, query } = extract(
+    const { username, recipe, failureReason, blogUrl, query } = await extract(
       job.data.instagramPostUrl,
     );
 
@@ -36,9 +36,9 @@ export const extractionQueue = registerQueue<QueueData>(
         numServings: recipe.numServings,
         instagramPostUrl: job.data.instagramPostUrl,
         instagramAuthorUsername: username,
-        instagramImageUrl:
-          "https://scontent-sjc3-1.cdninstagram.com/v/t51.2885-15/315555840_2053900548133965_5090871943698814695_n.jpg?stp=dst-jpg_e15&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMTUyeDIwNDguc2RyIn0&_nc_ht=scontent-sjc3-1.cdninstagram.com&_nc_cat=109&_nc_ohc=1PpraGNk58MAX-7sc2A&edm=ACWDqb8BAAAA&ccb=7-5&ig_cache_key=Mjk3MjMyMzc0NDI1ODk2Mzk2Mg%3D%3D.2-ccb7-5&oh=00_AfBi1X8NKeX-eBwlMu-Dd6CUojwjjoSoVl2xf72XZfHb4Q&oe=65499A80&_nc_sid=ee9879",
-        UserRecipes: {
+        blogUrl,
+        query,
+        userRecipes: {
           create: {
             user: {
               connect: {
@@ -47,7 +47,19 @@ export const extractionQueue = registerQueue<QueueData>(
             },
           },
         },
-        // Connect other relations or create related records if necessary
+        ingredients: {
+          create: recipe.ingredients.map(({ quantity, unit, name }) => ({
+            quantity,
+            unit,
+            name,
+          })),
+        },
+        instructions: {
+          create: recipe.instructions.map((text, index) => ({
+            text,
+            stepNumber: index + 1,
+          })),
+        },
       },
     });
   },

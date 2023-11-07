@@ -3,7 +3,7 @@ import { json, redirect } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 
-import { createRecipeFromInstagram } from "~/models/recipe.server";
+import { extractionQueue } from "~/queues/extraction/extraction.server";
 import { requireUserId } from "~/session.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -24,9 +24,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     );
   }
 
-  const recipe = await createRecipeFromInstagram({ instagramPostUrl, userId });
+  // Add recipe to the extraction queue
+  await extractionQueue.add("extract recipe", { instagramPostUrl, userId });
 
-  return redirect(`/recipes/${recipe.id}`);
+  return redirect(`/recipes/wait`);
 };
 
 export default function NewRecipePage() {

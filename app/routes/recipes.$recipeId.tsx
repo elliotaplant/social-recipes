@@ -39,6 +39,18 @@ export default function RecipeDetailsPage() {
   return (
     <div>
       <h3 className="text-2xl font-bold">{recipe.name}</h3>
+      <div className="flex gap-4">
+        {recipe.instagramPostUrl ? (
+          <a className="text-blue-500" href={recipe.instagramPostUrl}>
+            Instagram
+          </a>
+        ) : null}
+        {recipe.blogUrl ? (
+          <a className="text-blue-500" href={recipe.blogUrl}>
+            Website
+          </a>
+        ) : null}
+      </div>
       <div className="my-4">
         {recipe.prepTimeMinutes ? (
           <p>Preparation Time: {recipe.prepTimeMinutes} minutes</p>
@@ -80,11 +92,10 @@ export default function RecipeDetailsPage() {
           )}
         </ol>
       </div>
-      <hr className="my-4" />
-      <Form method="post">
+      <Form method="post" className="mt-8">
         <button
           type="submit"
-          className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-400"
+          className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600 focus:bg-red-400"
         >
           Delete
         </button>

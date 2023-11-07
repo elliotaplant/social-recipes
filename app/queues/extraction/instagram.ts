@@ -1,9 +1,21 @@
+import { INSTACOOKIE_REDIS_KEY } from "~/routes/instacookies";
+import { redis } from "~/utils/redis.server";
+
+async function instagramCookie() {
+  const instacookie = await redis.get(INSTACOOKIE_REDIS_KEY);
+  if (!instacookie) {
+    throw new Error("Instacookie not present. Set it in the UI");
+  }
+  return { cookie: instacookie };
+}
+
 export async function getPostInfo(
   postUrl: string,
 ): Promise<{ description: string; username: string }> {
   // Fetch the page content with query params to get JSON graphql response
   const jsonURL = postUrl + "?__a=1&__d=dis";
-  const response = await fetch(jsonURL);
+  const headers = await instagramCookie();
+  const response = await fetch(jsonURL, { headers });
 
   // Check if the request was successful
   if (!response.ok) {
@@ -26,12 +38,13 @@ export async function getUserBio(
   username: string,
 ): Promise<{ biography: string; external_url: string | undefined }> {
   // Fetch the page content with query params to get JSON graphql response
-  const url = `https://www.instagram.com/${username}/?__a=1&__d=dis`;
-  const response = await fetch(url);
+  const jsonURL = `https://www.instagram.com/${username}/?__a=1&__d=dis`;
+  const headers = await instagramCookie();
+  const response = await fetch(jsonURL, { headers });
 
   // Check if the request was successful
   if (!response.ok) {
-    throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+    throw new Error(`Failed to fetch ${jsonURL}: ${response.statusText}`);
   }
 
   // Load the page content

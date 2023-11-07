@@ -43,13 +43,15 @@ model Recipe {
   id                      String          @id @default(cuid())
   name                    String
   createdBy               String
-  prepTimeMinutes         Int
-  cookTimeMinutes         Int
-  numServings             Int
+  prepTimeMinutes         Int?
+  cookTimeMinutes         Int?
+  numServings             Int?
   instagramPostUrl        String?
   instagramAuthorUsername String?
   instagramImageUrl       String?
-  recipeBlogUrl           String?
+  blogUrl                 String?
+  blogImageUrl            String?
+  query                   String?
   userRecipes             UserRecipe[]
   ingredients             Ingredient[]
   instructions            Instruction[]
