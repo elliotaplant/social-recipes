@@ -185,6 +185,8 @@ afterEach(() => {
 
 That way, we can keep your local db clean and keep your tests isolated from one another.
 
+I'm not really sure how to mock all of the other dependencies we have for cypress
+
 ### Vitest
 
 For lower level tests of utilities and individual components, we use `vitest`. We have DOM-specific assertion helpers via [`@testing-library/jest-dom`](https://testing-library.com/jest-dom).
