@@ -4,7 +4,7 @@ import { registerQueue } from "~/utils/queue.server";
 import { extract } from "./extract";
 
 interface QueueData {
-  instagramPostUrl: string;
+  recipeUrl: string;
   userId: string;
 }
 
@@ -12,9 +12,14 @@ export const extractionQueue = registerQueue<QueueData>(
   "extraction",
   async (job) => {
     await job.log(`Beginning extraction job ${JSON.stringify(job.data)}`);
-    const { username, recipe, failureReason, blogUrl, query } = await extract(
-      job.data.instagramPostUrl,
-    );
+    const {
+      username,
+      recipe,
+      failureReason,
+      instagramPostUrl,
+      blogUrl,
+      query,
+    } = await extract(job.data.recipeUrl);
 
     if (failureReason) {
       console.log("Failed to create recipe:", failureReason);
@@ -34,7 +39,7 @@ export const extractionQueue = registerQueue<QueueData>(
         prepTimeMinutes: recipe.prepTimeMinutes,
         cookTimeMinutes: recipe.cookTimeMinutes,
         numServings: recipe.numServings,
-        instagramPostUrl: job.data.instagramPostUrl,
+        instagramPostUrl: instagramPostUrl,
         instagramAuthorUsername: username,
         blogUrl,
         query,

@@ -60,3 +60,8 @@ export function isValidInstagramUrl(url: string): boolean {
   const regex = /^https:\/\/www\.instagram\.com\/p\/[\w_-]+\/$/;
   return regex.test(url);
 }
+
+export function isValidUrl(url: string): boolean {
+  const regex = /^(https?:\/\/)([\w.-]+)(\.[\w.-]+)(\/.+)$/;
+  return regex.test(url);
+}

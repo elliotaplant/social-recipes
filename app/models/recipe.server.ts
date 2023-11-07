@@ -55,7 +55,10 @@ export async function createRecipeFromInstagram({
   instagramPostUrl: NonNullable<Recipe["instagramPostUrl"]>;
   userId: User["id"];
 }) {
-  await extractionQueue.add("extract recipe", { instagramPostUrl, userId });
+  await extractionQueue.add("extract recipe", {
+    recipeUrl: instagramPostUrl,
+    userId,
+  });
 }
 
 export function deleteRecipe({

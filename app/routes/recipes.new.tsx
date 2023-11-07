@@ -10,13 +10,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const userId = await requireUserId(request);
 
   const formData = await request.formData();
-  const instagramPostUrl = formData.get("instagramPostUrl");
+  const recipeUrl = formData.get("recipeUrl");
 
-  if (typeof instagramPostUrl !== "string" || instagramPostUrl.length === 0) {
+  if (typeof recipeUrl !== "string" || recipeUrl.length === 0) {
     return json(
       {
         errors: {
-          instagramPostUrl: "Instagram post URL is required",
+          recipeUrl: "Recipe URL is required",
           name: null,
         },
       },
@@ -25,7 +25,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 
   // Add recipe to the extraction queue
-  await extractionQueue.add("extract recipe", { instagramPostUrl, userId });
+  await extractionQueue.add("extract recipe", { recipeUrl, userId });
 
   return redirect(`/recipes/wait`);
 };
@@ -33,13 +33,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function NewRecipePage() {
   const actionData = useActionData<typeof action>();
   const nameRef = useRef<HTMLInputElement>(null);
-  const instagramPostUrlRef = useRef<HTMLInputElement>(null);
+  const recipeUrl = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (actionData?.errors?.name) {
       nameRef.current?.focus();
-    } else if (actionData?.errors?.instagramPostUrl) {
-      instagramPostUrlRef.current?.focus();
+    } else if (actionData?.errors?.recipeUrl) {
+      recipeUrl.current?.focus();
     }
   }, [actionData]);
 
@@ -47,24 +47,20 @@ export default function NewRecipePage() {
     <Form method="post" className="flex flex-col gap-2 w-full">
       <div>
         <label className="flex w-full flex-col gap-1">
-          <span>Instagram Post URL:</span>
+          <span>Recipe URL:</span>
           <input
-            ref={instagramPostUrlRef}
-            name="instagramPostUrl"
+            ref={recipeUrl}
+            name="recipeUrl"
             className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
-            aria-invalid={
-              actionData?.errors?.instagramPostUrl ? true : undefined
-            }
+            aria-invalid={actionData?.errors?.recipeUrl ? true : undefined}
             aria-errormessage={
-              actionData?.errors?.instagramPostUrl
-                ? "instagramPostUrl-error"
-                : undefined
+              actionData?.errors?.recipeUrl ? "recipeUrl-error" : undefined
             }
           />
         </label>
-        {actionData?.errors?.instagramPostUrl ? (
-          <div className="pt-1 text-red-700" id="instagramPostUrl-error">
-            {actionData.errors.instagramPostUrl}
+        {actionData?.errors?.recipeUrl ? (
+          <div className="pt-1 text-red-700" id="recipeUrl-error">
+            {actionData.errors.recipeUrl}
           </div>
         ) : null}
       </div>
