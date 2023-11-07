@@ -10,15 +10,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const userId = await requireUserId(request);
 
   const formData = await request.formData();
-  const name = formData.get("name");
   const instagramPostUrl = formData.get("instagramPostUrl");
-
-  if (typeof name !== "string" || name.length === 0) {
-    return json(
-      { errors: { instagramPostUrl: null, name: "Name is required" } },
-      { status: 400 },
-    );
-  }
 
   if (typeof instagramPostUrl !== "string" || instagramPostUrl.length === 0) {
     return json(
@@ -32,11 +24,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     );
   }
 
-  const recipe = await createRecipeFromInstagram({
-    name,
-    instagramPostUrl,
-    userId,
-  });
+  const recipe = await createRecipeFromInstagram({ instagramPostUrl, userId });
 
   return redirect(`/recipes/${recipe.id}`);
 };
@@ -56,27 +44,6 @@ export default function NewRecipePage() {
 
   return (
     <Form method="post" className="flex flex-col gap-2 w-full">
-      <div>
-        <label className="flex w-full flex-col gap-1">
-          <span>Name:</span>
-          <input
-            ref={nameRef}
-            name="name"
-            className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
-            autoComplete="false"
-            aria-invalid={actionData?.errors?.name ? true : undefined}
-            aria-errormessage={
-              actionData?.errors?.name ? "name-error" : undefined
-            }
-          />
-        </label>
-        {actionData?.errors?.name ? (
-          <div className="pt-1 text-red-700" id="name-error">
-            {actionData.errors.name}
-          </div>
-        ) : null}
-      </div>
-
       <div>
         <label className="flex w-full flex-col gap-1">
           <span>Instagram Post URL:</span>

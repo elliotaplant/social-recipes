@@ -32,12 +32,54 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 };
 
 export default function RecipeDetailsPage() {
-  const data = useLoaderData<typeof loader>();
+  const {
+    userRecipe: { recipe },
+  } = useLoaderData<typeof loader>();
 
   return (
     <div>
-      <h3 className="text-2xl font-bold">{data.userRecipe.recipe.name}</h3>
-      <p className="py-4 shrink">{JSON.stringify(data.userRecipe, null, 2)}</p>
+      <h3 className="text-2xl font-bold">{recipe.name}</h3>
+      <div className="my-4">
+        {recipe.prepTimeMinutes ? (
+          <p>Preparation Time: {recipe.prepTimeMinutes} minutes</p>
+        ) : null}
+        {recipe.cookTimeMinutes ? (
+          <p>Cooking Time: {recipe.cookTimeMinutes} minutes</p>
+        ) : null}
+        {recipe.numServings ? <p>Servings: {recipe.numServings}</p> : null}
+      </div>
+      <hr className="my-4" />
+      <div>
+        <h4 className="text-xl font-semibold">Ingredients</h4>
+        <ul>
+          {recipe.ingredients.length > 0 ? (
+            recipe.ingredients.map((ingredient, index) => (
+              <li key={index} className="flex gap-1">
+                {ingredient.quantity ? (
+                  <span>{ingredient.quantity}</span>
+                ) : null}
+                {ingredient.unit ? <span>{ingredient.unit}</span> : null}
+                <span>{ingredient.name}</span>
+              </li>
+            ))
+          ) : (
+            <p>No ingredients listed.</p>
+          )}
+        </ul>
+      </div>
+      <hr className="my-4" />
+      <div>
+        <h4 className="text-xl font-semibold">Instructions</h4>
+        <ol className="list-decimal pl-5">
+          {recipe.instructions.length > 0 ? (
+            recipe.instructions.map((instruction) => (
+              <li key={instruction.stepNumber}>{instruction.text}</li>
+            ))
+          ) : (
+            <p>No instructions provided.</p>
+          )}
+        </ol>
+      </div>
       <hr className="my-4" />
       <Form method="post">
         <button

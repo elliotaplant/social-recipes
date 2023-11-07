@@ -21,8 +21,6 @@ CREATE TABLE "Ingredient" (
     "quantity" REAL NOT NULL,
     "name" TEXT NOT NULL,
     "recipeId" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
     CONSTRAINT "Ingredient_recipeId_fkey" FOREIGN KEY ("recipeId") REFERENCES "Recipe" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -32,8 +30,6 @@ CREATE TABLE "Instruction" (
     "text" TEXT NOT NULL,
     "recipeId" TEXT NOT NULL,
     "stepNumber" INTEGER NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
     CONSTRAINT "Instruction_recipeId_fkey" FOREIGN KEY ("recipeId") REFERENCES "Recipe" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
