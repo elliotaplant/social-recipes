@@ -11,6 +11,7 @@ declare global {
 const redisOptions: RedisOptions = {
   maxRetriesPerRequest: null,
   enableReadyCheck: false,
+  family: Number(process.env.REDIS_FAMILY || 4),
 };
 
 // this is needed because in development we don't want to restart
