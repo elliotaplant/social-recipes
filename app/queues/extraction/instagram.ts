@@ -6,7 +6,11 @@ async function instagramCookie() {
   if (!instacookie) {
     throw new Error("Instacookie not present. Set it in the UI");
   }
-  return { cookie: instacookie };
+  return {
+    cookie: instacookie,
+    "sec-ch-ua":
+      '"Chromium";v="118", "Google Chrome";v="118", "Not=A?Brand";v="99"',
+  };
 }
 
 export async function getPostInfo(
@@ -15,6 +19,8 @@ export async function getPostInfo(
   // Fetch the page content with query params to get JSON graphql response
   const jsonURL = postUrl + "?__a=1&__d=dis";
   const headers = await instagramCookie();
+  console.log("jsonURL", jsonURL);
+  console.log("headers", headers);
   const response = await fetch(jsonURL, { headers });
 
   // Check if the request was successful
@@ -23,22 +29,15 @@ export async function getPostInfo(
   }
 
   // Load the page content
-  try {
-    const responseJson = await response.json();
+  const responseJson = await response.json();
 
-    // Pluck the description from the json response
-    return {
-      description:
-        responseJson.graphql?.shortcode_media?.edge_media_to_caption?.edges?.at(
-          0,
-        )?.node?.text,
-      username: responseJson.graphql?.shortcode_media?.owner?.username,
-    };
-  } catch (error) {
-    console.error("Failed to get JSON from the response");
-    console.error(await response.text());
-    throw error;
-  }
+  // Pluck the description from the json response
+  return {
+    description:
+      responseJson.graphql?.shortcode_media?.edge_media_to_caption?.edges?.at(0)
+        ?.node?.text,
+    username: responseJson.graphql?.shortcode_media?.owner?.username,
+  };
 }
 
 export async function getUserBio(
