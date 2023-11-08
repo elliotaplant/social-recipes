@@ -23,7 +23,7 @@ export const action = async ({
 
   // Assuming you have set up a Redis client and the `set` method is promisified
   try {
-    const cookie = `ds_user_id: ${dsUserId}; sessionid: ${sessionId};`;
+    const cookie = `ds_user_id=${dsUserId}; sessionid=${sessionId};`;
     await redis.set(INSTACOOKIE_REDIS_KEY, cookie);
     return json({ success: "Cookies have been set in Redis" });
   } catch (error) {

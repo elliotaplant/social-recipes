@@ -19,8 +19,6 @@ export async function getPostInfo(
   // Fetch the page content with query params to get JSON graphql response
   const jsonURL = postUrl + "?__a=1&__d=dis";
   const headers = await instagramCookie();
-  console.log("jsonURL", jsonURL);
-  console.log("headers", headers);
   const response = await fetch(jsonURL, { headers });
 
   // Check if the request was successful
@@ -31,13 +29,22 @@ export async function getPostInfo(
   // Load the page content
   const responseJson = await response.json();
 
-  // Pluck the description from the json response
-  return {
-    description:
-      responseJson.graphql?.shortcode_media?.edge_media_to_caption?.edges?.at(0)
-        ?.node?.text,
-    username: responseJson.graphql?.shortcode_media?.owner?.username,
-  };
+  // Pluck the description and username from the json response
+  let description =
+    responseJson.graphql?.shortcode_media?.edge_media_to_caption?.edges?.at(0)
+      ?.node?.text;
+
+  if (!description) {
+    description = responseJson.items?.at(0)?.caption?.text;
+  }
+
+  let username = responseJson.graphql?.shortcode_media?.owner?.username;
+
+  if (!username) {
+    username = responseJson.items?.at(0)?.user?.username;
+  }
+
+  return { description, username };
 }
 
 export async function getUserBio(
