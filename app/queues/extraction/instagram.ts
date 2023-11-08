@@ -23,15 +23,22 @@ export async function getPostInfo(
   }
 
   // Load the page content
-  const responseJson = await response.json();
+  try {
+    const responseJson = await response.json();
 
-  // Pluck the description from the json response
-  return {
-    description:
-      responseJson.graphql?.shortcode_media?.edge_media_to_caption?.edges?.at(0)
-        ?.node?.text,
-    username: responseJson.graphql?.shortcode_media?.owner?.username,
-  };
+    // Pluck the description from the json response
+    return {
+      description:
+        responseJson.graphql?.shortcode_media?.edge_media_to_caption?.edges?.at(
+          0,
+        )?.node?.text,
+      username: responseJson.graphql?.shortcode_media?.owner?.username,
+    };
+  } catch (error) {
+    console.error("Failed to get JSON from the response");
+    console.error(await response.text());
+    throw error;
+  }
 }
 
 export async function getUserBio(
