@@ -13,9 +13,6 @@ entrypoint = "sh"
 source = "data"
 destination = "/data"
 
-[env]
-  REDIS_FAMILY = 6
-
 [[services]]
 internal_port = 8_080
 processes = [ "app" ]
